@@ -1,5 +1,6 @@
 package com.example.mapshowcaseandroidtowebservice
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
@@ -39,19 +40,26 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-const val minLat = 54.333251000649454
-const val maxLat = 54.413205389562194
-const val minLong = 18.572490218700082
-const val maxLong = 18.709215200253727
-var selectedLat1 = minLat
-var selectedLng1 = minLong
-var selectedLat2 = maxLat
-var selectedLng2 = maxLong
+const val minLat = 54.04270752753084
+const val maxLat = 54.11773308594
+const val minLong = 21.314587417775144
+const val maxLong = 21.442646800979137
+var currentMinLat = minLat
+var currentMinLong = minLong
+var currentMaxLat = maxLat
+var currentMaxLong = maxLong
 
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    MapShowcaseAndroidToWebServiceTheme {
+        MapDisplay()
+    }
+}
 @Composable
 fun MapDisplay()
 {
-    var inputImageBitMap by remember { mutableStateOf("iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAApgAAAKYB3X3/OAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAANCSURBVEiJtZZPbBtFFMZ/M7ubXdtdb1xSFyeilBapySVU8h8OoFaooFSqiihIVIpQBKci6KEg9Q6H9kovIHoCIVQJJCKE1ENFjnAgcaSGC6rEnxBwA04Tx43t2FnvDAfjkNibxgHxnWb2e/u992bee7tCa00YFsffekFY+nUzFtjW0LrvjRXrCDIAaPLlW0nHL0SsZtVoaF98mLrx3pdhOqLtYPHChahZcYYO7KvPFxvRl5XPp1sN3adWiD1ZAqD6XYK1b/dvE5IWryTt2udLFedwc1+9kLp+vbbpoDh+6TklxBeAi9TL0taeWpdmZzQDry0AcO+jQ12RyohqqoYoo8RDwJrU+qXkjWtfi8Xxt58BdQuwQs9qC/afLwCw8tnQbqYAPsgxE1S6F3EAIXux2oQFKm0ihMsOF71dHYx+f3NND68ghCu1YIoePPQN1pGRABkJ6Bus96CutRZMydTl+TvuiRW1m3n0eDl0vRPcEysqdXn+jsQPsrHMquGeXEaY4Yk4wxWcY5V/9scqOMOVUFthatyTy8QyqwZ+kDURKoMWxNKr2EeqVKcTNOajqKoBgOE28U4tdQl5p5bwCw7BWquaZSzAPlwjlithJtp3pTImSqQRrb2Z8PHGigD4RZuNX6JYj6wj7O4TFLbCO/Mn/m8R+h6rYSUb3ekokRY6f/YukArN979jcW+V/S8g0eT/N3VN3kTqWbQ428m9/8k0P/1aIhF36PccEl6EhOcAUCrXKZXXWS3XKd2vc/TRBG9O5ELC17MmWubD2nKhUKZa26Ba2+D3P+4/MNCFwg59oWVeYhkzgN/JDR8deKBoD7Y+ljEjGZ0sosXVTvbc6RHirr2reNy1OXd6pJsQ+gqjk8VWFYmHrwBzW/n+uMPFiRwHB2I7ih8ciHFxIkd/3Omk5tCDV1t+2nNu5sxxpDFNx+huNhVT3/zMDz8usXC3ddaHBj1GHj/As08fwTS7Kt1HBTmyN29vdwAw+/wbwLVOJ3uAD1wi/dUH7Qei66PfyuRj4Ik9is+hglfbkbfR3cnZm7chlUWLdwmprtCohX4HUtlOcQjLYCu+fzGJH2QRKvP3UNz8bWk1qMxjGTOMThZ3kvgLI5AzFfo379UAAAAASUVORK5CYII") }
+    var inputImageBitMap by remember { mutableStateOf("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==") }
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -60,42 +68,45 @@ fun MapDisplay()
             FetchedImage(inputImageBitMap)
 
             Column(modifier = Modifier.padding(10.dp)){
-                CoordinatesInput("Bottom Left", 0)
+                CoordinatesInput("Minimum", 0)
                 Spacer(modifier = Modifier.height(10.dp))
-                CoordinatesInput("Top Right", 1)
+                CoordinatesInput("Maximum", 1)
             }
 
             Button(onClick = {
-                println(selectedLat1);
-                println(selectedLng1);
-                println(selectedLat2);
-                println(selectedLng2);
+                println(currentMinLat);
+                println(currentMinLong);
+                println(currentMaxLat);
+                println(currentMaxLong);
                 var testRequest = TestRequest()
                 var listener = IMapProviderListener { inputImageBitMap = it };
 
-                if(abs(selectedLat1) <= 0.1) selectedLng1 = minLat;
-                if(abs(selectedLat2) <= 0.1) selectedLat2 = maxLat;
-                if(abs(selectedLng1) <= 0.1) selectedLng1 = minLong;
-                if(abs(selectedLng2) <= 0.1) selectedLng2 = maxLong;
+                if(abs(currentMinLat) <= 0.1) currentMinLong = minLat;
+                if(abs(currentMaxLat) <= 0.1) currentMaxLat = maxLat;
+                if(abs(currentMinLong) <= 0.1) currentMinLong = minLong;
+                if(abs(currentMaxLong) <= 0.1) currentMaxLong = maxLong;
 
-                selectedLat1 = Math.min(selectedLat1, maxLat);
-                selectedLat1 = Math.max(selectedLat1, minLat);
+                if(currentMinLong >= currentMaxLong) currentMinLong = currentMaxLong - 0.01;
+                if(currentMinLat >= currentMaxLat) currentMinLat = currentMaxLat - 0.01;
 
-                selectedLat2 = Math.min(selectedLat2, maxLat);
-                selectedLat2 = Math.max(selectedLat2, minLat);
+                currentMinLat = Math.min(currentMinLat, maxLat);
+                currentMinLat = Math.max(currentMinLat, minLat);
 
-                selectedLng1 = Math.min(selectedLng1, maxLong);
-                selectedLng1 = Math.max(selectedLng1, minLong);
+                currentMaxLat = Math.min(currentMaxLat, maxLat);
+                currentMaxLat = Math.max(currentMaxLat, minLat);
 
-                selectedLng2 = Math.min(selectedLng2, maxLong);
-                selectedLng2 = Math.max(selectedLng2, minLong);
+                currentMinLong = Math.min(currentMinLong, maxLong);
+                currentMinLong = Math.max(currentMinLong, minLong);
 
-                testRequest.startWebAccess(listener, selectedLng1, selectedLat1, selectedLng2, selectedLat2)
+                currentMaxLong = Math.min(currentMaxLong, maxLong);
+                currentMaxLong = Math.max(currentMaxLong, minLong);
+
+                testRequest.startWebAccess(listener, currentMinLong, currentMinLat, currentMaxLong, currentMaxLat)
 
             }, modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentWidth(Alignment.CenterHorizontally)){
-                Text("Evaluate")
+                Text("Run")
             }
         }
     }
@@ -125,53 +136,62 @@ fun FetchedImage(input:String){
     }
 }
 
-
 @Composable
 fun CoordinatesInput(title: String, id:Int) {
-    var longText by remember { mutableStateOf("") }
+    var longText by remember { mutableStateOf( "") }
     var latText by remember { mutableStateOf("") }
 
     Column(modifier = Modifier
         .fillMaxWidth()
         .wrapContentWidth(Alignment.CenterHorizontally))
     {
-        Text(title)
-        TextField(
-            value = longText,
-            onValueChange = { longText = it
-                if(id==0){
-                    selectedLng1 = longText.toDouble();
-                }else{
-                    selectedLng2 = longText.toDouble();
+        Row()
+        {
+            Column()
+            {
+                Text("$title long", Modifier.wrapContentHeight(Alignment.CenterVertically))
+                if(id == 0){
+                    Text("min: ${minLong.toString().subSequence(0, 12)}")
+                } else {
+                    Text("max: ${maxLong.toString().subSequence(0, 12)}")
                 }
+            }
+            TextField(
+                value = longText,
+                onValueChange = {
+                    longText = it
+                    if(it != null && it != ""){
+                        if(id==0){ currentMinLong = longText.toDouble(); }
+                        else{ currentMaxLong = longText.toDouble(); }
+                    }
+                },
+                modifier = Modifier.width(100.dp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
+        }
 
-            },
-            modifier = Modifier,
-
-            label = { Text(text = "long");
-            },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
-        TextField(
-            value = latText,
-            onValueChange = { latText = it
-                if(id==0){
-                    selectedLat1 = latText.toDouble()
-                }else{
-                    selectedLat2 = latText.toDouble()
+        Row()
+        {
+            Column()
+            {
+                Text("$title lat", Modifier.wrapContentHeight(Alignment.CenterVertically))
+                if(id == 0){
+                    Text("min: ${minLat.toString().subSequence(0, 12)}")
+                } else {
+                    Text("max: ${maxLat.toString().subSequence(0, 12)}")
                 }
-            },
-            modifier = Modifier,
-            label = { Text(text = "lat") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    MapShowcaseAndroidToWebServiceTheme {
-        MapDisplay()
+            }
+            TextField(
+                value = latText,
+                onValueChange = { latText = it
+                    if(it != null && it != "") {
+                        if (id == 0) { currentMinLat = latText.toDouble() }
+                        else { currentMaxLat = latText.toDouble() }
+                    }
+                },
+                modifier = Modifier.width(100.dp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
+        }
     }
 }

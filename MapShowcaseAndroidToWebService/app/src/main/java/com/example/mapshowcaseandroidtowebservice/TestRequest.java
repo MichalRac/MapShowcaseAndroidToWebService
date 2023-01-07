@@ -9,9 +9,9 @@ import org.ksoap2.transport.HttpTransportSE;
 
 public class TestRequest {
     private static final String NAMESPACE = "MapShowcase"; // com.service.ServiceImpl
-    private static final String URL = "http://192.168.0.32:8080/MapShowcaseAndroidToWebService/MapShowcase?wsdl";
+    private static final String URL = "http://192.168.0.32:8080/MapShowcaseAndroidToWebService/MapShowcaseService?WSDL";
     private static final String METHOD_NAME = "getEncodedMap";
-    private static final String SOAP_ACTION = "http://192.168.0.32:8080/MapShowcaseAndroidToWebService/MapShowcase/getEncodedMap";
+    private static final String SOAP_ACTION = "http://192.168.0.32:8080/MapShowcaseAndroidToWebService/MapShowcaseService/getEncodedMap";
 
     private String webResponse = "";
     private Thread thread;
@@ -59,9 +59,7 @@ public class TestRequest {
                     webResponse = objectResult.toString();
                     System.out.println("response: " + webResponse);
 
-                    int startIndex = webResponse.indexOf("=") + 1;
-                    int endIndex = webResponse.lastIndexOf("=") + 1;
-                    String formattedResponse = webResponse.substring(startIndex, endIndex);
+                    String formattedResponse = webResponse.substring(29, webResponse.length() - 3);
 
                     listener.OnMapProvided(formattedResponse);
 

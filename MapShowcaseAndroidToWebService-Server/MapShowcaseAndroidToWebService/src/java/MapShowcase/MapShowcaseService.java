@@ -14,17 +14,24 @@ import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 
-@WebService(serviceName = "MapShowcase", targetNamespace = "MapShowcase")
-public class MapShowcase {
+
+@WebService(serviceName = "MapShowcaseService", targetNamespace = "MapShowcase")
+public class MapShowcaseService {
+    
+
+final Double minLat = 54.04270752753084;
+final Double maxLat = 54.11773308594;
+final Double minLong = 21.314587417775144;
+final Double maxLong = 21.442646800979137;
+
     @WebMethod(operationName = "getEncodedMap")
-    public String getEncodedMap(@WebParam(name = "lat0") double lat0, @WebParam(name = "long0") double long0, @WebParam(name = "lat1") double lat1, @WebParam(name = "long1") double long1) {
-        
+    public String getEncodedMap(@WebParam(name = "lat0") double lat0, @WebParam(name = "long0") double long0, @WebParam(name = "lat1") double lat1, @WebParam(name = "long1") double long1) {        
         System.out.println("lat0 = " + lat0);
         System.out.println("lat1 = " + lat1);
         System.out.println("long0 = " + long0);
         System.out.println("long1 = " + long1);
 
-        Double ImageSize = 800D;
+        Double ImageSize = 750D;
         
         lat0 = GetLatitudeAnchor(lat0);
         lat1 = GetLatitudeAnchor(lat1);
@@ -36,9 +43,15 @@ public class MapShowcase {
         System.out.println("long0 = " + long0);
         System.out.println("long1 = " + long1);
         
-        if(lat0 == lat1 || long0 == long1)
+        if(lat0 == lat1)
         {
-            return "error";
+            lat0 = 0.001;
+            lat1 = 1.0;
+        }
+        if(long0 == long1)
+        {
+            long0 = 0.001;
+            long1 = 1.0;
         }
         
         int x = (int)(long0 * ImageSize);
@@ -58,7 +71,7 @@ public class MapShowcase {
         System.out.println("height = " + height);
 
         try{
-            InputStream fullMapImageBase64 = getClass().getClassLoader().getResourceAsStream("map.png");
+            InputStream fullMapImageBase64 = getClass().getClassLoader().getResourceAsStream("mapa.png");
             BufferedImage img = ImageIO.read(fullMapImageBase64);
             BufferedImage croppedImage = cropImage(img, new Rectangle(x, y, width, height));
 
@@ -80,10 +93,7 @@ public class MapShowcase {
     }
     
     private Double GetLatitudeAnchor(Double lat)
-    {
-        Double minLat = 54.333251000649454D;
-        Double maxLat = 54.413205389562194D;
-        
+    {        
         lat = Math.min(lat, maxLat);
         lat = Math.max(lat, minLat);
         
@@ -94,14 +104,11 @@ public class MapShowcase {
     }
     
     private Double GetLongitudeAnchor(Double lon) {
-        Double minLon = 18.572490218700082;
-        Double maxLon = 18.709215200253727;
+        lon = Math.min(lon, maxLong);
+        lon = Math.max(lon, minLong);
         
-        lon = Math.min(lon, maxLon);
-        lon = Math.max(lon, minLon);
-        
-        Double divisor = maxLon - minLon;
-        Double result = (lon - minLon) / divisor;
+        Double divisor = maxLong - minLong;
+        Double result = (lon - minLong) / divisor;
         
         return result;
     }
